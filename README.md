@@ -2,7 +2,7 @@
 
 キングジムのテプラPROシリーズ用印刷ユーティリティ
 
-[@nyacom](https://twitter.com/nyacom-net) 2024
+[@nyacom](https://x.com/nyacom_net) 2024
 
 ## これは何？
 
