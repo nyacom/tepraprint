@@ -26,10 +26,11 @@ Author: [@nyacom](https://x.com/nyacom_net) (C) 2024
 * 現状Debianでしか試していないため保証できませんが、CUPSを使っているMacでも動くかもしれません。
   * そのうち試してみます。
 
-## 使い方
+## 使い方（暫定)
 
 * Python3とpyUSBが必要
-* tepraprint.py からPILが対応している画像ファイルを直接テプラに流しこんで印刷できます
+  * お手持ちのテプラに合わせてUSBのproductIdを書き換えてください (pytepra.pyまたはtepraprint.py)  
+* tepraprint.py を使うとPILが対応している画像ファイルを直接テプラに流しこんで印刷できます(CUPSを使わない場合)
 * CUPSプリンタとして登録する場合は、cups以下にあるsr920.ppdをCUPSに登録してください。
   * cups/tepraprintの変数TEPRAPRINTをtepraprint.pyの置いてあるパスに通してください
   * Makefileにプリンタのインストールコマンドがあるので、make setup-printer でインストールできます。
