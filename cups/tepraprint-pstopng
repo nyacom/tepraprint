@@ -1,0 +1,31 @@
+#!/bin/bash
+
+#------------------------------------------------------------------------------
+# TEPRAPRINT CUPS filter for PostScript to PNG conversion
+# nyacom (C) 2024.10
+#------------------------------------------------------------------------------
+
+if [ $# -lt 5 ]; then
+    echo "Usage: $0 job-id user-name job-name copies options"
+    exit 1
+fi
+
+job_id=$1
+user_name=$2
+job_name=$3
+copies=$4
+options=$5
+
+# デバッグ用
+#echo $(printenv) >> /tmp/sr9xx_filter_debug.log
+#echo "$0" >> /tmp/sr9xx_filter_debug.log
+#echo "$1" >> /tmp/sr9xx_filter_debug.log
+#echo "$2" >> /tmp/sr9xx_filter_debug.log
+#echo "$3" >> /tmp/sr9xx_filter_debug.log
+#echo "$4" >> /tmp/sr9xx_filter_debug.log
+#echo "$5" >> /tmp/sr9xx_filter_debug.log
+#echo "$6" >> /tmp/sr9xx_filter_debug.log
+
+gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=png16m -q -r360 -o - -
+
+exit 0

@@ -1,0 +1,53 @@
+#!/bin/bash
+
+#==============================================================================
+# TEPRAPRINT CUPS wrapper
+# nyacom (C) 2024.10
+#==============================================================================
+TEPRAPRINT="/home/evilmaster/project/libpytepra/tepraprint.py"
+
+# Default CUPS backend arguments
+if [ $# -lt 5 ]; then
+    echo "ERROR: Not enough arguments" >&2
+    exit 1
+fi
+
+job_id=$1
+user_name=$2
+job_name=$3
+options=$4
+device_uri=$5
+
+# デバッグ用
+#echo "JOB ID: $job_id" > /tmp/tepraprint_debug.log
+#echo "USER NAME: $user_name" >> /tmp/tepraprint_debug.log
+#echo "JOB_NAME: $job_name" >> /tmp/tepraprint_debug.log
+#echo "OPTIONS: $options" >> /tmp/tepraprint_debug.log
+#echo "DEVICE_URI: $device_uri" >> /tmp/tepraprint_debug.log
+
+tape_cut_option=$(echo "$options" | grep -oP '(?<=TapeCut=)[^\s]+')
+contrast_option=$(echo "$options" | grep -oP '(?<=Contrast=)[^\s]+')
+dithering_option=$(echo "$options" | grep -oP '(?<=Dithering=)[^\s]+')
+
+# デフォルト値を設定
+[ -z "$tape_cut_option" ] && tape_cut_option="half-cut"
+[ -z "$contrast_option" ] && contrast_option="0"
+[ -z "$dithering_option" ] && dithering_option="1"
+
+#echo "TAPE_CUT_OPTION: $tape_cut_option" >> /tmp/tepraprint_debug.log
+#echo "CONTRAST_OPTION: $contrast_option" >> /tmp/tepraprint_debug.log
+#echo "DITHERING_OPTION: $dithering_option" >> /tmp/tepraprint_debug.log
+
+# TEPRAPRINTを呼び出し、ログを出力
+python3 $TEPRAPRINT \
+    --cut-mode "$tape_cut_option" \
+    --print-contrast "$contrast_option" \
+    --print-dither "$dithering_option" \
+    --input - >> /tmp/tepraprint_debug.log 2>&1
+
+if [ $? -ne 0 ]; then
+    echo "ERROR: print failed" >&2
+    exit 1
+fi
+
+exit 0
