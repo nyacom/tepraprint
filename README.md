@@ -29,7 +29,7 @@ Author: [@nyacom](https://x.com/nyacom_net) (C) 2024
 ## 使い方（暫定)
 
 * Python3とpyUSBが必要
-  * お手持ちのテプラに合わせてUSBのproductIdを書き換えてください (pytepra.pyまたはtepraprint.py)  
+  * 手持ちのテプラに合わせてUSBのproductIdを書き換える (pytepra.pyまたはtepraprint.py)  
 * tepraprint.py を使うとPILが対応している画像ファイルを直接テプラに流しこんで印刷できます(CUPSを使わない場合)
 * CUPSプリンタとして登録する場合は、cups以下にあるsr920.ppdをCUPSに登録してください。
   * cups/tepraprintの変数TEPRAPRINTをtepraprint.pyの置いてあるパスに通してください
@@ -57,7 +57,7 @@ MIT
 
 ### SR920のプリンタコマンド
 
-* ESP/P2Lと名乗っている通り、ESP/Pっぽいのだが基本的に独自仕様
+* ESC/P2Lと名乗っている通り、ESP/Pっぽいのだが基本的に独自仕様
   * まあ、エプソンのOEMなのでそりゃそうか・・・
 * PCからの印刷の場合、基本的にラスタで送られてくることしか想定していないのだと思われる
   * SPC9に本体内蔵のフォントを使って印刷する機能がないことからの想像
@@ -93,7 +93,7 @@ MIT
 
 印刷パケットの先頭に入っている設定がコマンドの詳細は現状わからないが、SPC10から色々印刷してみて分析した結果として、以下の仕様であることが判明した。
 
-* 制御系のコマンドは 1b 7b (ESC {) で始まり、Checksum 7d(})で終わる
+* 制御系のコマンドは 1b 7b (ESC {) で始まり、<checksum_byte> 7d(})で終わる
   * 例えば 1b 7b 07  43 02 02 01 01  49  7d だと 1b 7b 07 43 までがコマンド、49が43から01までを加算したチェックサムで49、7dがコマンドの終わりを示す。
 
 * 印刷長（テープ長）などのパラメータはLowByte, HighByteの順の16bitリトルエンディアンで格納されている
@@ -234,7 +234,7 @@ ESC . COMPRESS1 VSEP1 HSEP1 LINES1 WIDTH data...
   * 1mmあたり0xC(12)が入るので、例えば12mmのテープの場合は0x90(144)となる
 * dataはWIDTHのビット数分のデータが続き、例えば12mmのテープの場合は144ビット(36バイト)のデータが続く
 
-## Ghostscript
+## Ghostscript --> Raster
 
 CUPSに対応させようとすると、CUPSはPostScriptで投げてくるので、Ghostscriptを使ってラスタデータに変換する必要がある。
 
@@ -243,7 +243,9 @@ gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -o - -q -r360 logo.ps | ./teprapri
 ```
 
 * -q が無いと、GhostscriptがSTDINにバナーを出力してしまうので、受け取ったときにPILに壊れてると怒られる。
+* CUPS的にはCUPS raster形式にするフィルタがあるけど、Pythonからだと扱いにくいんだよな・・・
 
 ## References
 
-Universal Serial Bus Device Class Definition for Printing Devices (<https://www.usb.org/sites/default/files/usbprint11a021811.pdf>)
+* Universal Serial Bus Device Class Definition for Printing Devices - https://www.usb.org/sites/default/files/usbprint11a021811.pdf
+* EPSON ESC/P Reference manual - https://files.support.epson.com/pdf/general/escp2ref.pdf
