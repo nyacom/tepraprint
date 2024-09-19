@@ -40,6 +40,10 @@ Author: [@nyacom](https://x.com/nyacom_net) (C) 2024
 
 * 2024/09/19 初版リリース
 
+## License
+
+MIT
+
 ## TODO
 
 * まともなドキュメントを用意する
@@ -239,8 +243,6 @@ gs -dSAFER -dBATCH -dNOPAUSE -sDEVICE=pnggray -o - -q -r360 logo.ps | ./teprapri
 ```
 
 * -q が無いと、GhostscriptがSTDINにバナーを出力してしまうので、受け取ったときにPILに壊れてると怒られる。
-
-
 
 ## References
 
