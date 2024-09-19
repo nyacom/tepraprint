@@ -2,7 +2,7 @@
 
 キングジムのテプラPROシリーズ用印刷ユーティリティ
 
-[@nyacom](https://x.com/nyacom_net) 2024
+Author: [@nyacom](https://x.com/nyacom_net) (C) 2024
 
 ## これは何？
 
@@ -31,6 +31,7 @@
 * Python3とpyUSBが必要です
 * tepraprint.py からPILが対応している画像ファイルを直接テプラに流しこんで印刷できます
 * CUPSプリンタとして登録する場合は、cups以下にあるsr920.ppdをCUPSに登録してください。
+  * cups/tepraprintの変数TEPRAPRINTをtepraprint.pyの置いてあるパスに通してください
   * Makefileにプリンタのインストールコマンドがあるので、make setup-printer でインストールできます。
   * udevルールを設定しておくと、一般ユーザでも印刷できるようになります。(99-tepraprint.rulesを参考にしてください)
 
