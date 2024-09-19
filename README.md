@@ -40,7 +40,7 @@ Author: [@nyacom](https://x.com/nyacom_net) (C) 2024
 
 * 2024/09/19 初版リリース
 
-## License
+## Licence
 
 MIT
 
