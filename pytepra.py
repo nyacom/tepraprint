@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 import io
 
 import usb.core
@@ -21,8 +21,8 @@ class Tape_cut_mode(Enum):
     NONE = b'\x1b\x7b\x07\x43\x00\x00\x00\x00\x43\x7d'         # カットしない
     CUT = b'\x1b\x7b\x07\x43\x03\x01\x01\x01\x49\x7d'          # カットする
     HALF_CUT = b'\x1b\x7b\x07\x43\x02\x02\x01\x01\x49\x7d'     # カット + ハーフカット
-    JOB_CUT = b'\x1b\x7b\x07\x43\x03\x00\x01\x01\x49\x7d'      # ジョブごとにカット
-    JOB_HALF_CUT = b'\x1b\x7b\x07\x43\x02\x00\x01\x01\x49\x7d' # ジョブごとにカット + ハーフカット
+    JOB_CUT = b'\x1b\x7b\x07\x43\x03\x00\x01\x01\x48\x7d'      # ジョブごとにカット
+    JOB_HALF_CUT = b'\x1b\x7b\x07\x43\x02\x00\x01\x01\x47\x7d' # ジョブごとにカット + ハーフカット
 
 class PyTepra:
     def __init__(self, idVendor=0x0d8a, idProduct=0x0103):
@@ -141,6 +141,7 @@ class PyTepra:
 
     def cmd_tape_cut_mode(self):
         # テープカットモードの指定 (0x1b 0x7b 0x04 0x43)
+        print("DEBUG: Tape cut mode:", self.tape_cut_mode)
         self.send_data(self.tape_cut_mode.value)
 
     def cmd_print_offset(self):
@@ -167,12 +168,14 @@ class PyTepra:
         data_bits = self.tape_width_mm * 0x0c
         data_bytes = data_bits // 8
 
+        print("DEBUG: Data bits:", data_bits)
+
         if len(data) % data_bytes != 0:
             raise ValueError("Data length must be a multiple of data bytes.")
 
         for i in range(0, len(data), data_bytes):
             chunk = data[i:i + data_bytes]
-            self.send_data(b'\x1b\x2e\x00\x0a\x0a\x01' + data_bits.to_bytes(1, 'little') + b'\x00' + chunk)
+            self.send_data(b'\x1b\x2e\x00\x0a\x0a\x01' + data_bits.to_bytes((data_bits // 0xff)+1, 'little') + b'\x00' + chunk)
 
         self.send_data(b'\x0c') # FIXME: なんかデータ終端に0x0cを送信する必要があるらしい。
 

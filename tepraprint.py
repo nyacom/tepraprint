@@ -1,4 +1,4 @@
-#!/bin/env python3
+#!/usr/bin/env python3
 
 #============================================================
 # TEPRAPRINT print utility
@@ -89,19 +89,19 @@ if __name__ == "__main__":
 
     # Set cut mode
     if args.cut_mode == "none":
-        tepra.cut_mode = pytepra.Tape_cut_mode.NONE
+        tepra.tape_cut_mode = pytepra.Tape_cut_mode.NONE
 
     elif args.cut_mode == "cut":
-        tepra.cut_mode = pytepra.Tape_cut_mode.CUT
+        tepra.tape_cut_mode = pytepra.Tape_cut_mode.CUT
 
     elif args.cut_mode == "half-cut":
-        tepra.cut_mode = pytepra.Tape_cut_mode.HALF_CUT
+        tepra.tape_cut_mode = pytepra.Tape_cut_mode.HALF_CUT
 
     elif args.cut_mode == "job-cut":
-        tepra.cut_mode = pytepra.Tape_cut_mode.JOB_CUT
+        tepra.tape_cut_mode = pytepra.Tape_cut_mode.JOB_CUT
 
     elif args.cut_mode == "job-half-cut":
-        tepra.cut_mode = pytepra.Tape_cut_mode.JOB_HALF_CUT
+        tepra.tape_cut_mode = pytepra.Tape_cut_mode.JOB_HALF_CUT
 
     # Set contrast
     tepra.print_contrast = args.print_contrast
