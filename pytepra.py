@@ -15,13 +15,16 @@ DEBUG = True  # True: Debug mode, False: Normal mode
 # ユニット単位 --> 1mm変換
 UNIT_MM = 14.173  # 360 / 25.4
 
+# USB通信のタイムアウト時間 (ms) 印刷中ブロックし続けるので長めに設定する必要がある
+USB_TIMEOUT = 60000
+
 #------------------------------------------------------------
 class Tape_cut_mode(Enum):
     # テープカットモードコマンド
-    NONE = b'\x1b\x7b\x07\x43\x00\x00\x00\x00\x43\x7d'         # カットしない
-    CUT = b'\x1b\x7b\x07\x43\x03\x01\x01\x01\x49\x7d'          # カットする
-    HALF_CUT = b'\x1b\x7b\x07\x43\x02\x02\x01\x01\x49\x7d'     # カット + ハーフカット
-    JOB_CUT = b'\x1b\x7b\x07\x43\x03\x00\x01\x01\x48\x7d'      # ジョブごとにカット
+    NONE =         b'\x1b\x7b\x07\x43\x00\x00\x00\x00\x43\x7d' # カットしない
+    CUT =          b'\x1b\x7b\x07\x43\x03\x01\x01\x01\x49\x7d' # ラベルカットする
+    HALF_CUT =     b'\x1b\x7b\x07\x43\x02\x02\x01\x01\x49\x7d' # ラベルカット + ハーフカット
+    JOB_CUT =      b'\x1b\x7b\x07\x43\x03\x00\x01\x01\x48\x7d' # ジョブごとにカット
     JOB_HALF_CUT = b'\x1b\x7b\x07\x43\x02\x00\x01\x01\x47\x7d' # ジョブごとにカット + ハーフカット
 
 class PyTepra:
@@ -30,10 +33,10 @@ class PyTepra:
         self.idProduct = idProduct
         self.dev = None
 
-        self.tape_width_mm = 12      # Default tape width
-        self.print_start_margin = 2  # Default print start margin
+        self.tape_width_mm = 12      # Default tape width (mm)
+        self.print_start_margin = 2  # Default print start margin (mm)
         self.print_contrast = 0      # Default print contrast level (-3 to 3)
-        self.print_length = 0        # Default print length (0 = auto)
+        self.print_length = 0        # Default print length (0 = auto) (mm)
         self.tape_cut_mode = Tape_cut_mode.CUT  # Default tape cut mode
         self.print_dither = True     # Default dithering method
 
@@ -90,7 +93,7 @@ class PyTepra:
         if DRY:
             return
 
-        self.ep_out.write(data)
+        self.ep_out.write(data, timeout=USB_TIMEOUT)
 
     def get_device_id(self) -> str:
         if self.dev is None:
@@ -175,7 +178,7 @@ class PyTepra:
 
         for i in range(0, len(data), data_bytes):
             chunk = data[i:i + data_bytes]
-            self.send_data(b'\x1b\x2e\x00\x0a\x0a\x01' + data_bits.to_bytes((data_bits // 0xff)+1, 'little') + b'\x00' + chunk)
+            self.send_data(b'\x1b\x2e\x00\x0a\x0a\x01' + data_bits.to_bytes(2, 'little') + b'\x00' + chunk)
 
         self.send_data(b'\x0c') # FIXME: なんかデータ終端に0x0cを送信する必要があるらしい。
 
@@ -227,7 +230,7 @@ class PyTepra:
 
         return byte_data
 
-    def cmd_terminate(self):
+    def cmd_job_terminate(self):
         self.send_data(b'\x1b\x7b\x03\x40\x40\x7d')
 
     def print_graphic(self, data: bytes, copies: int = 1):
@@ -253,8 +256,8 @@ class PyTepra:
             # 印刷データ送信
             self.cmd_print_graphic(data)
 
-            # コマンド終了
-            self.cmd_terminate()
+        # JOB終了
+        self.cmd_job_terminate()
 
     def get_tape_width_mm(self):
         # テプラ本体に装着されているテープの幅を取得する

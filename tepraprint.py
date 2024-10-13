@@ -18,9 +18,9 @@ if __name__ == "__main__":
     arg.add_argument("-tc", "--cut", action="store_true", help="Cut tape")
     arg.add_argument("--vervose", action="store_true", help="Verbose output")
 
-    arg.add_argument("--dry-run", action="store_true", help="Perform a dry run without printing")
-    arg.add_argument("--cut-mode", choices=["none", "cut", "half-cut", "job-cut", "job-half-cut"], default="cut", help="Set the tape cut mode")
-    arg.add_argument("--tape-width", type=int, default=0, help="Set the tape width in mm. 0 for auto")
+    arg.add_argument("--dryrun", action="store_true", help="Perform a dry run without printing")
+    arg.add_argument("--cutmode", choices=["none", "cut", "half-cut", "job-cut", "job-half-cut"], default="cut", help="Set the tape cut mode")
+    arg.add_argument("--tapewidth", type=int, default=0, help="Set the tape width in mm. 0 for auto")
     arg.add_argument("--copies", type=int, default=1, help="Number of copies to print")
     arg.add_argument("--print-length", type=int, default=0, help="Set the print label length in mm. 0 for auto")
     arg.add_argument("--print-margin", type=int, default=0, help="Set the print margin in mm")
@@ -52,8 +52,8 @@ if __name__ == "__main__":
         exit(0)
 
     # Tape width
-    if args.tape_width > 0:
-        tepra.tape_width_mm = args.tape_width
+    if args.tapewidth > 0:
+        tepra.tape_width_mm = args.tapewidth
     else:
         tepra.tape_width_mm = tepra.get_tape_width_mm()
 
@@ -88,19 +88,19 @@ if __name__ == "__main__":
     tepra.print_start_margin = args.print_margin
 
     # Set cut mode
-    if args.cut_mode == "none":
+    if args.cutmode == "none":
         tepra.tape_cut_mode = pytepra.Tape_cut_mode.NONE
 
-    elif args.cut_mode == "cut":
+    elif args.cutmode == "cut":
         tepra.tape_cut_mode = pytepra.Tape_cut_mode.CUT
 
-    elif args.cut_mode == "half-cut":
+    elif args.cutmode == "half-cut":
         tepra.tape_cut_mode = pytepra.Tape_cut_mode.HALF_CUT
 
-    elif args.cut_mode == "job-cut":
+    elif args.cutmode == "job-cut":
         tepra.tape_cut_mode = pytepra.Tape_cut_mode.JOB_CUT
 
-    elif args.cut_mode == "job-half-cut":
+    elif args.cutmode == "job-half-cut":
         tepra.tape_cut_mode = pytepra.Tape_cut_mode.JOB_HALF_CUT
 
     # Set contrast
